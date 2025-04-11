@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/MathewBravo/schemasnap/internal/commands"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 )
 
@@ -31,4 +32,10 @@ var DiffCmd = &cobra.Command{
 var InitCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initializes shemasnap based on your provided config parameters",
+	Run: func(cmd *cobra.Command, args []string) {
+		p := tea.NewProgram(commands.InitialModel())
+		if _, err := p.Run(); err != nil {
+			fmt.Println("Error running UI for Init: %v\n")
+		}
+	},
 }
