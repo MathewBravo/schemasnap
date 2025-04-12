@@ -89,11 +89,6 @@ go build -o schemasnap ./cmd/schemasnap
 Contributions are welcome!  
 If you'd like to help, please open an issue, suggest an improvement, or submit a pull request.
 
----
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
 
 ---
 
