@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	cmd.RootCmd.AddCommand(cmd.VersionCmd, cmd.DiffCmd, cmd.InitCmd)
+	cmd.RootCmd.AddCommand(cmd.VersionCmd, cmd.DiffCmd, cmd.InitCmd, cmd.TestCmd)
 }
 
 func main() {

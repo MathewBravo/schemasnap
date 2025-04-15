@@ -8,6 +8,8 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+
+	"github.com/spf13/viper"
 )
 
 var (
@@ -17,6 +19,14 @@ var (
 type model struct {
 	inputs     []textinput.Model
 	focusIndex int
+}
+
+type Config struct {
+	Host     string `mapstructure:"host"`
+	Port     string `mapstructure:"port"`
+	Database string `mapstructure:"database"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
 }
 
 func InitialModel() model {
@@ -68,6 +78,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "enter":
 			if m.focusIndex == len(m.inputs)-1 {
+				if err := m.saveConfig(); err != nil {
+					panic(err)
+				}
+
 				return m, tea.Quit
 			}
 			m.inputs[m.focusIndex].Blur()
@@ -111,4 +125,36 @@ func (m model) createConfigDir() tea.Msg {
 		}
 	}
 	return true
+}
+
+func (m model) saveConfig() error {
+	cdir, err := os.UserConfigDir()
+	if err != nil {
+		return err
+	}
+	appConfigDir := filepath.Join(cdir, "schemasnap")
+	configFile := filepath.Join(appConfigDir, "config.yaml")
+
+	// Capture user input into Config struct
+	cfg := Config{
+		Host:     m.inputs[0].Value(),
+		Port:     m.inputs[1].Value(),
+		Database: m.inputs[2].Value(),
+		User:     m.inputs[3].Value(),
+		Password: m.inputs[4].Value(),
+	}
+
+	// Tell viper where to write
+	viper.SetConfigFile(configFile)
+	viper.SetConfigType("yaml")
+
+	// Pass values into viper
+	viper.Set("host", cfg.Host)
+	viper.Set("port", cfg.Port)
+	viper.Set("database", cfg.Database)
+	viper.Set("user", cfg.User)
+	viper.Set("password", cfg.Password)
+
+	// Save the config
+	return viper.WriteConfigAs(configFile)
 }

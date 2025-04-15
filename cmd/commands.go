@@ -39,3 +39,9 @@ var InitCmd = &cobra.Command{
 		}
 	},
 }
+
+var TestCmd = &cobra.Command{
+	Use:   "test",
+	Short: "Developer tool to test connections to database",
+	Run:   commands.TestConnection,
+}
